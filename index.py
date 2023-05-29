@@ -11,48 +11,26 @@ from linebot.models import (
 )
 
 import requests
-import time
 
-def search_map(location):
+def checkword(w):
+    url = 'https://www.moedict.tw/uni/' + w
+    r = requests.get(url)
+    datas = r.json()
+    msg = '國字：' + datas['title'] + '\n'
+    msg += '部首：' + datas['radical'] + '\n'
+    msg += '筆劃：' + str(datas['stroke_count']) + '\n\n'
+    for i in range(len(datas['heteronyms'])):
+        msg += '注音：' + datas['heteronyms'][i]['bopomofo'] + '\n'
+        msg += '拼音：' + datas['heteronyms'][i]['pinyin'] + '\n'    
+        for j in range(len(datas['heteronyms'][i]['definitions'])):
+            if 'type' in datas['heteronyms'][i]['definitions'][j]:
+                msg += '[{}] {}\n'.format(
+                    datas['heteronyms'][i]['definitions'][j]['type'],
+                    datas['heteronyms'][i]['definitions'][j]['def'])
+        msg += '\n'
+    return msg
 
-    api_key = "AIzaSyBWPCrm2QF-ocBbTSXd7rrltDi3liuHUIs"
-
-    url = f"https://maps.googleapis.com/maps/api/place/textsearch/json"
-    params = {
-        "query" : location,
-        "language" : "zh-TW",
-        "key" : api_key
-    }
-
-    results = []
-
-    while True:
-        response = requests.get(url,params = params)
-        data = response.json()
-
-        if "results" in data:
-            results.extend(data["results"])
-
-        if not "next_page_token" in data:
-            break
-
-        time.sleep(2)
-
-        params["pagetoken"] = data["next_page_token"]
-
-    for result in results:
-        name = result["name"]
-        address = result["formatted_address"]
-        lat = result["geometry"]["location"]["lat"]
-        lng = result["geometry"]["location"]["lng"]
-
-        print("地點名稱: "+name ,"地址: "+address ,"座標: "+f"https://www.google.com/maps/dir/{lat}+{lng}","-"*70,sep = "\n")
-
-    print(f"合計{len(results)}項")
-    print("以下空白")
-
-location = input("請輸入要查詢的地點: ")
-search_map(location)
+w = input("請輸入要查詢的國字：")
 
 line_bot_api = LineBotApi('30fHYzc70eBZEscXrgWyuW0QQMPVGPd4R+CLHhdJAeokJrgn5OlH+TxOcfAzdvxErPxRtvmc6kDr5gvrrm31urWPPayGhThQvwbZ0E79cWH+8M2pjXbtiAgzvwoHX+BcHRnozscUh8i6LIZaUU1zZAdB04t89/1O/w1cDnyilFU=')
 handler1 = WebhookHandler('b2a58c0974beadd965204bda652ced11')
@@ -81,8 +59,7 @@ def callback():
 def handle_message(event):
     line_bot_api.reply_message(
         event.reply_token,
-        TextSendMessage(search_map(event.message.text)))
-
+        TextSendMessage(checkword(event.message.text))
 
 if __name__ == "__main__":
     app.run()
