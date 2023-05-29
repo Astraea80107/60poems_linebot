@@ -36,7 +36,7 @@ def search_map(location):
         if not "next_page_token" in data:
             break
 
-        time.sleep(5)
+        time.sleep(2)
 
         params["pagetoken"] = data["next_page_token"]
 
@@ -53,8 +53,6 @@ def search_map(location):
 
 location = input("請輸入要查詢的地點: ")
 search_map(location)
-
-app = Flask(__name__)
 
 line_bot_api = LineBotApi('30fHYzc70eBZEscXrgWyuW0QQMPVGPd4R+CLHhdJAeokJrgn5OlH+TxOcfAzdvxErPxRtvmc6kDr5gvrrm31urWPPayGhThQvwbZ0E79cWH+8M2pjXbtiAgzvwoHX+BcHRnozscUh8i6LIZaUU1zZAdB04t89/1O/w1cDnyilFU=')
 handler1 = WebhookHandler('b2a58c0974beadd965204bda652ced11')
