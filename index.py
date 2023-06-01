@@ -10,8 +10,6 @@ from linebot.models import (
     MessageEvent, TextMessage, TextSendMessage,
 )
 
-app = Flask(__name__)
-
 import twstock
 
 twstock.realtime.mock = False
@@ -48,6 +46,8 @@ def realtime(stock_id):
 
         return error
 
+app = Flask(__name__)
+    
 line_bot_api = LineBotApi('30fHYzc70eBZEscXrgWyuW0QQMPVGPd4R+CLHhdJAeokJrgn5OlH+TxOcfAzdvxErPxRtvmc6kDr5gvrrm31urWPPayGhThQvwbZ0E79cWH+8M2pjXbtiAgzvwoHX+BcHRnozscUh8i6LIZaUU1zZAdB04t89/1O/w1cDnyilFU=')
 handler1 = WebhookHandler('b2a58c0974beadd965204bda652ced11')
 
@@ -74,7 +74,7 @@ def callback():
 def handle_message(event):
     line_bot_api.reply_message(
         event.reply_token,
-        TextSendMessage(text=realtime(event.message.text))
+        TextSendMessage(text=realtime(event.message.text)))
 
 if __name__ == "__main__":
     app.run()
