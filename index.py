@@ -32,9 +32,7 @@ def sign(thing):
     explain1 = sp.find("div",class_="fs_box fs_left").text.split("\t")[0]
     explain2 = sp.find_all("div",class_="fs_box fs_left")[1].text.split("\t")[0]
 
-    msg = (f"""你抽取關於{event.message.text}的籤詩為:
-
-{title1}
+    msg = (f"""{title1}
 
 {title2}
 {title3}
